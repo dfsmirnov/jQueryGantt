@@ -31,7 +31,7 @@ jQuery.fn.isFullfilled = function () {
 	var firstErrorElement = "";
 
 	this.each(function () {
-		var theElement = $(this);
+		var theElement = jQuery(this);
 		theElement.removeClass("formElementsError");
 		//if (theElement.val().trim().length == 0 || theElement.attr("invalid") == "true") {  //robicch 13/2/15
 		if (theElement.is("[required]") && theElement.val().trim().length == 0 || theElement.attr("invalid") == "true") {
@@ -39,7 +39,7 @@ jQuery.fn.isFullfilled = function () {
 				theElement = theElement.prevAll("#" + theElement.prop("id") + "_txt:first");
 			} else if (theElement.is("[withTinyMCE]")){
         if (tinymce.activeEditor.getContent()=="")
-          theElement=$("#"+theElement.attr("name")+"_tbl");
+          theElement=jQuery("#"+theElement.attr("name")+"_tbl");
         else
           return true;// in order to continue the loop
       }
@@ -67,19 +67,19 @@ jQuery.fn.isFullfilled = function () {
 function canSubmitForm(formOrId) {
 	//console.debug("canSubmitForm",formOrId);
 	if (typeof formOrId != "object")
-		formOrId=$("#" + formOrId);
+		formOrId=jQuery("#" + formOrId);
 	return formOrId.find(":input[required],:input[invalid=true]").isFullfilled();
 }
 
 function showSavingMessage() {
-	$("#savingMessage:hidden").fadeIn();
-	$("body").addClass("waiting");
-	$(window).resize();
+	jQuery("#savingMessage:hidden").fadeIn();
+	jQuery("body").addClass("waiting");
+	jQuery(window).resize();
 }
 function hideSavingMessage() {
-	$("#savingMessage:visible").fadeOut();
-	$("body").removeClass("waiting");
-	$(window).resize();
+	jQuery("#savingMessage:visible").fadeOut();
+	jQuery("body").removeClass("waiting");
+	jQuery(window).resize();
 }
 
 
@@ -380,7 +380,7 @@ jQuery.fn.validateField = function () {
 	var isValid = true;
 
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		el.clearErrorAlert();
 
 		var value = el.val();
@@ -464,7 +464,7 @@ jQuery.fn.validateField = function () {
 					rett=false;
 					isValid=false;
 
-					$("body").trigger("error");
+					jQuery("body").trigger("error");
 				}
 
 				if (rett && el.attr("maxValue") && val>max){
@@ -484,23 +484,23 @@ jQuery.fn.validateField = function () {
 
 jQuery.fn.clearErrorAlert = function () {
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		el.removeAttr("invalid").removeClass("formElementsError");
-		$("#" + el.prop("id") + "error").remove();
+		jQuery("#" + el.prop("id") + "error").remove();
 	});
 	return this;
 };
 
 jQuery.fn.createErrorAlert = function (errorCode, message) {
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		el.attr("invalid", "true").addClass("formElementsError");
-		if ($("#" + el.prop("id") + "error").length <= 0) {
+		if (jQuery("#" + el.prop("id") + "error").length <= 0) {
 			var errMess = (errorCode ? errorCode : "") + ": " + (message ? message : "");
 			var err = "<span class='formElementExclamation' id=\"" + el.prop("id") + "error\" error='1'";
-			err += " onclick=\"alert($(this).attr('title'))\" border='0' align='absmiddle'>&nbsp;";
+			err += " onclick=\"alert(jQuery(this).attr('title'))\" border='0' align='absmiddle'>&nbsp;";
 			err += "</span>\n";
-			err = $(err);
+			err = jQuery(err);
 			err.prop("title", errMess);
 			el.after(err);
 		}
@@ -536,7 +536,7 @@ function restoreFormValues(idForm) {
 }
 
 function changeActionAndSubmit(action,command){
-	var f=$("form:first");
+	var f=jQuery("form:first");
 	f.prop("action",action);
 	f.find("[name=CM]").val(command);
 	f.submit();
@@ -551,9 +551,9 @@ function limitSize(ob) {
 		var val = ob.value;//.replace(/\r\n/g,"\n");
 		if (val.length > ml) {
 			ob.value = val.substr(0, ml);
-			$(ob).createErrorAlert("Error",i18n.ERR_FIELD_MAX_SIZE_EXCEEDED);
+			jQuery(ob).createErrorAlert("Error",i18n.ERR_FIELD_MAX_SIZE_EXCEEDED);
 		} else {
-			$(ob).clearErrorAlert();
+			jQuery(ob).clearErrorAlert();
 		}
 	}
 	return true;
@@ -570,8 +570,8 @@ function alertOnUnload(container) {
     if (typeof(managePageUnload) == "function")
       managePageUnload();
 
-    container=container||$("body");
-    var inps= $("[alertonchange=true]",container).find("[oldValue=1]");
+    container=container||jQuery("body");
+    var inps= jQuery("[alertonchange=true]",container).find("[oldValue=1]");
     for (var j = 0; j < inps.length; j++) {
       var anInput = inps.eq(j);
       //console.debug(j,anInput,anInput.isValueChanged())
@@ -583,7 +583,7 @@ function alertOnUnload(container) {
           }
 
         } else if (anInput.isValueChanged()) {
-          var inputLabel = $("label[for='" + anInput.prop("id") + "']").text(); //use label element
+          var inputLabel = jQuery("label[for='" + anInput.prop("id") + "']").text(); //use label element
           inputLabel = inputLabel ? inputLabel : anInput.prop("name");
           return i18n.FORM_IS_CHANGED + " \"" + inputLabel + "\"";
         }
@@ -605,7 +605,7 @@ function canILeave(){
 // update all values selected
 jQuery.fn.updateOldValue = function () {
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		var val=(el.is(":checkbox,:radio")?el.prop("checked"):el.val())+"";
 		el.data("_oldvalue", val);
 	});
@@ -616,7 +616,7 @@ jQuery.fn.updateOldValue = function () {
 jQuery.fn.isValueChanged = function () {
 	var ret = false;
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		var val=(el.is(":checkbox,:radio")?el.prop("checked"):el.val())+"";
 		if (val != el.data("_oldvalue") + "") {
 			//console.debug("io sono diverso "+el.prop("id")+ " :"+el.val()+" != "+el.data("_oldvalue"));
@@ -628,19 +628,19 @@ jQuery.fn.isValueChanged = function () {
 };
 
 jQuery.fn.getOldValue = function () {
-	return $(this).data("_oldvalue");
+	return jQuery(this).data("_oldvalue");
 };
 
 jQuery.fn.fillJsonWithInputValues = function (jsonObject) {
   var inputs = this.find(":input");
-  $.each(inputs.serializeArray(),function(){
+  jQuery.each(inputs.serializeArray(),function(){
     if (this.name) {
         jsonObject[this.name] = this.value;
     }
   });
 
   inputs.filter(":checkbox[name]").each(function () {
-    var el = $(this);
+    var el = jQuery(this);
     jsonObject[el.attr("name")] = el.is(":checked") ? "yes" : "no";
 
   })
@@ -652,7 +652,7 @@ jQuery.fn.fillJsonWithInputValues = function (jsonObject) {
 
 function enlargeTextArea(immediate) {
   //console.debug("enlargeTextArea",immediate);
-	var el = $(this);
+	var el = jQuery(this);
 
   var delay=immediate===true?1:300;
 	el.stopTime("taResizeApply");

@@ -23,11 +23,11 @@
 //----------------------------------positioning-----------------------------------------------
 jQuery.fn.centerOnScreen = function () {
   return this.each(function () {
-    var container = $(this);
-    //console.debug($(window).height(), container.outerHeight(),(($(window).height() - container.outerHeight()) / 2))
+    var container = jQuery(this);
+    //console.debug(jQuery(window).height(), container.outerHeight(),((jQuery(window).height() - container.outerHeight()) / 2))
     container.css("position", "fixed");
-    container.css("top", (($(window).height() - container.outerHeight()) / 2) + 'px');
-    container.css("left", (($(window).width() - container.outerWidth()) / 2) + 'px');
+    container.css("top", ((jQuery(window).height() - container.outerHeight()) / 2) + 'px');
+    container.css("left", ((jQuery(window).width() - container.outerWidth()) / 2) + 'px');
   });
 };
 
@@ -38,10 +38,10 @@ function nearBestPosition(whereId, theObjId, centerOnEl) {
 	var target = theObjId;
 
 	if (typeof whereId != "object") {
-		el = $("#" + whereId);
+		el = jQuery("#" + whereId);
 	}
 	if (typeof theObjId != "object") {
-		target = $("#" + theObjId);
+		target = jQuery("#" + theObjId);
 	}
 
 	if (el) {
@@ -49,7 +49,7 @@ function nearBestPosition(whereId, theObjId, centerOnEl) {
 		var hasContainment = false;
 
 		target.parents().each(function () {
-			if ($(this).css("position") == "static")
+			if (jQuery(this).css("position") == "static")
 				return;
 
 			hasContainment = true;
@@ -78,9 +78,9 @@ function nearBestPosition(whereId, theObjId, centerOnEl) {
 			target.css("top", top);
 		}
 
-		if (target.offset().left >= ( ($(window).width() + $(window).scrollLeft()) - target.outerWidth())) {
+		if (target.offset().left >= ( (jQuery(window).width() + jQuery(window).scrollLeft()) - target.outerWidth())) {
 
-			left = ( ($(window).width() + $(window).scrollLeft()) - target.outerWidth() - 10 );
+			left = ( (jQuery(window).width() + jQuery(window).scrollLeft()) - target.outerWidth() - 10 );
 			target.css({left:left, marginTop: 0});
 		}
 
@@ -89,7 +89,7 @@ function nearBestPosition(whereId, theObjId, centerOnEl) {
 			target.css("left", left);
 		}
 
-		if ((target.offset().top + target.outerHeight() >= ( ($(window).height() + $(window).scrollTop()) - barHeight)) && (target.outerHeight() < $(window).height())) {
+		if ((target.offset().top + target.outerHeight() >= ( (jQuery(window).height() + jQuery(window).scrollTop()) - barHeight)) && (target.outerHeight() < jQuery(window).height())) {
 			var marginTop = -(target.outerHeight() + el.outerHeight());
 			target.css("margin-top", marginTop);
 		}
@@ -104,31 +104,31 @@ function nearBestPosition(whereId, theObjId, centerOnEl) {
 	}
 }
 
-$.fn.keepItVisible = function (ref) {
-	var thisTop = $(this).offset().top;
-	var thisLeft = $(this).offset().left;
+jQuery.fn.keepItVisible = function (ref) {
+	var thisTop = jQuery(this).offset().top;
+	var thisLeft = jQuery(this).offset().left;
 	var fromTop =0;
 	var fromLeft =0;
 
-	var windowH =  $(window).height() + $(window).scrollTop();
-	var windowW =  $(window).width() + $(window).scrollLeft();
+	var windowH =  jQuery(window).height() + jQuery(window).scrollTop();
+	var windowW =  jQuery(window).width() + jQuery(window).scrollLeft();
 
 	if (ref){
 		fromTop = windowH - (ref.offset().top);
 		fromLeft = windowW -  (ref.offset().left + ref.outerWidth());
 	}
 
-	if (thisTop + $(this).outerHeight() > windowH){
-		var mt = (thisTop + $(this).outerHeight()) - windowH;
-//		$(this).css("margin-top", -$(this).outerHeight() - fromTop);
-		$(this).css("margin-top", -mt - fromTop);
+	if (thisTop + jQuery(this).outerHeight() > windowH){
+		var mt = (thisTop + jQuery(this).outerHeight()) - windowH;
+//		jQuery(this).css("margin-top", -jQuery(this).outerHeight() - fromTop);
+		jQuery(this).css("margin-top", -mt - fromTop);
 	}
-	if (thisLeft + $(this).outerWidth() > windowW){
-		var mL = (thisLeft + $(this).outerWidth()) - windowW;
-//		$(this).css("margin-left", -$(this).outerWidth() - fromLeft);
-		$(this).css("margin-left", -mL - fromLeft);
+	if (thisLeft + jQuery(this).outerWidth() > windowW){
+		var mL = (thisLeft + jQuery(this).outerWidth()) - windowW;
+//		jQuery(this).css("margin-left", -jQuery(this).outerWidth() - fromLeft);
+		jQuery(this).css("margin-left", -mL - fromLeft);
 	}
-	$(this).css("visibility", "visible");
+	jQuery(this).css("visibility", "visible");
 };
 
 //END positioning
@@ -141,7 +141,7 @@ function setSelection(input, start, end) {
   input.setSelectionRange(start, end);
 }
 
-$.fn.setCursorPosition = function(pos) {
+jQuery.fn.setCursorPosition = function(pos) {
 	this.each(function(index, elem) {
 		if (elem.setSelectionRange) {
 			elem.setSelectionRange(pos, pos);
@@ -161,66 +161,66 @@ $.fn.setCursorPosition = function(pos) {
 
 
 /*----------------------------------------------------------------- manage bbButtons*/
-$.buttonBar = {
+jQuery.buttonBar = {
   defaults: {},
 
   init: function(){
     setTimeout(function(){
-      $.buttonBar.manageButtonBar();
+      jQuery.buttonBar.manageButtonBar();
     },100);
 
-    $(window).on("scroll.ButtonBar",function(){
-      $.buttonBar.manageButtonBar();
+    jQuery(window).on("scroll.ButtonBar",function(){
+      jQuery.buttonBar.manageButtonBar();
     });
-    $(window).on("resize.ButtonBar",function(){
-      $.buttonBar.manageButtonBar();
+    jQuery(window).on("resize.ButtonBar",function(){
+      jQuery.buttonBar.manageButtonBar();
     });
   },
 
   manageButtonBar: function(anim) {
 
-    $(".buttonArea").not(".bbCloned").not(".notFix").each(function(){
+    jQuery(".buttonArea").not(".bbCloned").not(".notFix").each(function(){
       var bb = this;
 
       //se usiamo questi si rompe la button bar flottante del save sulla issue list
-      //bb.originalHeigh=bb.originalHeigh ||  $(bb).height();
-      //bb.originalOffsetTop=bb.originalOffsetTop||$(bb).offset().top;
+      //bb.originalHeigh=bb.originalHeigh ||  jQuery(bb).height();
+      //bb.originalOffsetTop=bb.originalOffsetTop||jQuery(bb).offset().top;
 
-      bb.originalHeigh= $(bb).height();
-      bb.originalOffsetTop=$(bb).offset().top;
+      bb.originalHeigh= jQuery(bb).height();
+      bb.originalOffsetTop=jQuery(bb).offset().top;
 
-      bb.isOut = $(window).scrollTop() + $(window).height() - bb.originalHeigh < bb.originalOffsetTop;
+      bb.isOut = jQuery(window).scrollTop() + jQuery(window).height() - bb.originalHeigh < bb.originalOffsetTop;
 
       if (bb.bbHolder)
-        bb.bbHolder.css({width: $(bb).outerWidth(),left:$(bb).offset().left});
+        bb.bbHolder.css({width: jQuery(bb).outerWidth(),left:jQuery(bb).offset().left});
 
       if (bb.isOut && !bb.isCloned){
         if (bb.bbHolder)
           bb.bbHolder.remove();
         bb.isCloned = true;
-        bb.bbHolder = $(bb).clone().addClass("bbCloned clone bottom").css({width: $(bb).outerWidth(), marginTop:0,left:$(bb).offset().left});
+        bb.bbHolder = jQuery(bb).clone().addClass("bbCloned clone bottom").css({width: jQuery(bb).outerWidth(), marginTop:0,left:jQuery(bb).offset().left});
         bb.bbHolder.hide();
-        bb.bbHolder.css({position:"fixed", bottom:0, left:$(bb).offset().left});
-        $(bb).after(bb.bbHolder);
+        bb.bbHolder.css({position:"fixed", bottom:0, left:jQuery(bb).offset().left});
+        jQuery(bb).after(bb.bbHolder);
         bb.bbHolder.show();
-        $(bb).css("visibility","hidden");
+        jQuery(bb).css("visibility","hidden");
 
       } else if (!bb.isOut && bb.isCloned) {
       //} else {
         bb.isCloned = false;
         bb.bbHolder.remove();
-        $(bb).css("visibility","visible");
+        jQuery(bb).css("visibility","visible");
       }
     });
   },
 
   refreshButtonBar: function() {
-    $(".bbCloned").remove();
-    $(".buttonArea").not(".bbCloned").each(function(){
+    jQuery(".bbCloned").remove();
+    jQuery(".buttonArea").not(".bbCloned").each(function(){
       var bb = this;
       bb.isCloned = false;
     });
 
-    $.buttonBar.manageButtonBar(false);
+    jQuery.buttonBar.manageButtonBar(false);
   }
 };

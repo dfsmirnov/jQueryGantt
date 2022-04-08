@@ -64,9 +64,9 @@ function enqueueNewTest() {
 }
 
 
-$(function () {
+jQuery(function () {
   console.debug("Gantt test unit activated");
-  $("#workSpace").one("gantt.redrawCompleted", function () {
+  jQuery("#workSpace").one("gantt.redrawCompleted", function () {
     setTimeout(enqueueNewTest, 1000);
   });
 });
@@ -85,7 +85,7 @@ ganttTestUnits.push({name: "Passo 1: Chiudi P chiude F",
   ],
   prepareTest:             function () {
     //apro il selettore stati e chiudo il task
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_DONE]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_DONE]").click()});
   },
   assertOk:                function () {
     var ret = ge.tasks[1].status == "STATUS_DONE" && ge.tasks[2].status == "STATUS_DONE";
@@ -97,7 +97,7 @@ ganttTestUnits.push({name: "Passo 1: Chiudi P chiude F",
 ganttTestUnits.push({name: "Passo 2: Provo ad aprire P, non ci riesco",
   prepareTest:             function () {
     //apro il selettore stati e chiudo il task
-    ge.tasks[2].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_ACTIVE]").click()});
+    ge.tasks[2].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_ACTIVE]").click()});
   },
   assertOk:                function () {
     return ret = ge.tasks[1].status == "STATUS_DONE" && ge.tasks[2].status == "STATUS_DONE";
@@ -108,7 +108,7 @@ ganttTestUnits.push({name: "Passo 2: Provo ad aprire P, non ci riesco",
 ganttTestUnits.push({name: "Passo 3: Fallisce P fallisce F",
   prepareTest:             function () {
     //apro il selettore stati e chiudo il task
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_FAILED]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_FAILED]").click()});
   },
   assertOk:                function () {
     return ret = ge.tasks[1].status == "STATUS_FAILED";
@@ -119,7 +119,7 @@ ganttTestUnits.push({name: "Passo 3: Fallisce P fallisce F",
 ganttTestUnits.push({name: "Passo 4: Apro P, F resta fallito",
   prepareTest:             function () {
     //apro il selettore stati e chiudo il task
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_ACTIVE]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_ACTIVE]").click()});
   },
   assertOk:                function () {
     return ret = ge.tasks[2].status == "STATUS_FAILED";
@@ -189,7 +189,7 @@ ganttTestUnits.push({name: "Chiude A : mette B e C in stato aperto",
   ],
   prepareTest:             function () {
     //apro il selettore stati e clicco su done
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_DONE]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_DONE]").click()});
   },
   assertOk:                function () {
     //"a" devere andare in completato
@@ -208,7 +208,7 @@ ganttTestUnits.push({name: "Tree tutto undefined, apro la root: A open B,C waiti
   ],
   prepareTest:             function () {
     //apro il selettore stati e clicco su done
-    ge.tasks[0].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_ACTIVE]").click()});
+    ge.tasks[0].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_ACTIVE]").click()});
   },
   assertOk:                function () {
     //"a" devere andare in completato
@@ -229,7 +229,7 @@ ganttTestUnits.push({name: "Caso Cabassi passo 1: c dipende da a, c1 dipende da 
   ],
   prepareTest:             function () {
     //apro il selettore stati e clicco su done
-    ge.tasks[3].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_DONE]").click()});
+    ge.tasks[3].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_DONE]").click()});
   },
   assertOk:                function () {
     //"b1" devere andare in completato c e c1 in waiting
@@ -242,7 +242,7 @@ ganttTestUnits.push({name: "Caso Cabassi passo 1: c dipende da a, c1 dipende da 
 ganttTestUnits.push({name: "Caso Cabassi passo 2: c dipende da a, c1 dipende da b1: chiudendo a c e c1 divengono attivi",
   prepareTest:             function () {
     //apro il selettore stati e clicco su done
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_DONE]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_DONE]").click()});
   },
   assertOk:                function () {
     //a done, c,c1 attivi
@@ -255,7 +255,7 @@ ganttTestUnits.push({name: "Caso Cabassi passo 2: c dipende da a, c1 dipende da 
 ganttTestUnits.push({name: "Caso Cabassi passo 3: Fallisco predecessore, dip e figli falliscono. a->failed: c,c1->failed",
   prepareTest:             function () {
     //apro il selettore stati e clicco su done
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_FAILED]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_FAILED]").click()});
   },
   assertOk:                function () {
     //a done, c,c1 attivi
@@ -393,7 +393,7 @@ ganttTestUnits.push({name: "Passo 1: Sospende P Sospende F",
   ],
   prepareTest:             function () {
     //apro il selettore stati e chiudo il task
-    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {$(this).next().find("[status=STATUS_SUSPENDED]").click()});
+    ge.tasks[1].rowElement.find(".taskStatus").click().oneTime(100, "setStat", function () {jQuery(this).next().find("[status=STATUS_SUSPENDED]").click()});
 
   },
   assertOk:                function () {

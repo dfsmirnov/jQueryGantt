@@ -1,16 +1,16 @@
-$.fn.loadTemplates = function() {
-  $.JST.loadTemplates($(this));
+jQuery.fn.loadTemplates = function() {
+  jQuery.JST.loadTemplates(jQuery(this));
   return this;
 };
 
-$.JST = {
+jQuery.JST = {
   _templates: new Object(),
   _decorators:new Object(),
 
   loadTemplates: function(elems) {
     elems.each(function() {
-      $(this).find(".__template__").each(function() {
-          var tmpl = $(this);
+      jQuery(this).find(".__template__").each(function() {
+          var tmpl = jQuery(this);
           var type = tmpl.attr("type");
 
           //template may be inside <!-- ... --> or not in case of ajax loaded templates
@@ -41,14 +41,14 @@ $.JST = {
                             + "');}return p.join('');";
 
           try {
-            $.JST._templates[type] = new Function("obj", strFunc);
+            jQuery.JST._templates[type] = new Function("obj", strFunc);
           } catch (e) {
             console.error("JST error: "+type, e,strFunc);
           }
 
           } else { //plain template   e.g. ##id##
           try {
-            $.JST._templates[type] = templateBody;
+            jQuery.JST._templates[type] = templateBody;
           } catch (e) {
             console.error("JST error: "+type, e,templateBody);
           }
@@ -61,7 +61,7 @@ $.JST = {
   },
 
   createFromTemplate: function(jsonData, template, transformToPrintable) {
-    var templates = $.JST._templates;
+    var templates = jQuery.JST._templates;
 
     var jsData=new Object();
     if (transformToPrintable){
@@ -103,18 +103,18 @@ $.JST = {
       stripString = templates[template]; // recover strip template
       if (!stripString || stripString.trim() == "") {
         console.error("No template found for type '" + template + "'");
-        return $("<div>");
+        return jQuery("<div>");
 
       } else {
         stripString = fillStripData(stripString, jsData); //replace placeholders with data
       }
     }
 
-    var ret = $(stripString);// create a jquery object in memory
+    var ret = jQuery(stripString);// create a jquery object in memory
     ret.attr("__template", template); // set __template attribute
 
     //decorate the strip
-    var dec = $.JST._decorators[template];
+    var dec = jQuery.JST._decorators[template];
     if (typeof (dec) == "function")
       dec(ret, jsData);
 
@@ -123,20 +123,20 @@ $.JST = {
 
 
   existsTemplate: function(template) {
-    return $.JST._templates[template];
+    return jQuery.JST._templates[template];
   },
 
   //decorate function is like function(domElement,jsonData){...}
   loadDecorator:function(template, decorator) {
-    $.JST._decorators[template] = decorator;
+    jQuery.JST._decorators[template] = decorator;
   },
 
   getDecorator:function(template) {
-    return $.JST._decorators[template];
+    return jQuery.JST._decorators[template];
   },
 
   decorateTemplate:function(element) {
-    var dec = $.JST._decorators[element.attr("__template")];
+    var dec = jQuery.JST._decorators[element.attr("__template")];
     if (typeof (dec) == "function")
       dec(editor);
   },
@@ -144,12 +144,12 @@ $.JST = {
   // asynchronous
   ajaxLoadAsynchTemplates: function(templateUrl, callback) {
 
-    $.get(templateUrl, function(data) {
+    jQuery.get(templateUrl, function(data) {
 
-      var div = $("<div>");
+      var div = jQuery("<div>");
       div.html(data);
 
-      $.JST.loadTemplates(div);
+      jQuery.JST.loadTemplates(div);
 
       if (typeof(callback == "function"))
         callback();
@@ -157,14 +157,14 @@ $.JST = {
   },
 
   ajaxLoadTemplates: function(templateUrl) {
-    $.ajax({
+    jQuery.ajax({
       async:false,
       url: templateUrl,
       dataType: "html",
       success: function(data) {
-        var div = $("<div>");
+        var div = jQuery("<div>");
         div.html(data);
-        $.JST.loadTemplates(div);
+        jQuery.JST.loadTemplates(div);
       }
     });
 

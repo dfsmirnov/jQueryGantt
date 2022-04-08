@@ -66,18 +66,18 @@ function showFeedbackMessage(typeOrObject, message, title, autoCloseTime) {
 		autoCloseTime = 0;
 
 	//console.debug("showFeedbackMessage",typeOrObject, message, title);
-	var place = $("#__FEEDBACKMESSAGEPLACE");
+	var place = jQuery("#__FEEDBACKMESSAGEPLACE");
 	var mess;
 	if (typeof(typeOrObject)=="object" )
 		mess=typeOrObject;
 	else
 		mess = {type:typeOrObject, message:message,title:title};
 	//if exists append error message
-	var etm = $(".FFC_"+mess.type+":visible ._errorTemplateMessage");
+	var etm = jQuery(".FFC_"+mess.type+":visible ._errorTemplateMessage");
 	if(etm.length>0){
 		etm.append("<hr>"+(mess.title?"<b>"+mess.title+"</b><br>":"")+mess.message+"<br>");
 	}else{
-		etm = $.JST.createFromTemplate(mess, "errorTemplate");
+		etm = jQuery.JST.createFromTemplate(mess, "errorTemplate");
 		place.append(etm);
 		place.fadeIn();
 	}
@@ -87,39 +87,39 @@ function showFeedbackMessage(typeOrObject, message, title, autoCloseTime) {
 			etm.fadeOut();
 		},autoCloseTime);
 
-		$(".FFC_OK").stopTime("ffchide").oneTime(1500, "ffchide",function () {$(this).fadeOut(400,function(){$(this)})});
-		$(".FFC_WARNING").stopTime("ffchide").oneTime(75000, "ffchide",function () {$(this).fadeOut(400,function(){$(this)})});
-		$(".FFC_ERROR").stopTime("ffchide").oneTime(10000, "ffchide",function () {$(this).fadeOut(400,function(){$(this)})});
+		jQuery(".FFC_OK").stopTime("ffchide").oneTime(1500, "ffchide",function () {jQuery(this).fadeOut(400,function(){jQuery(this)})});
+		jQuery(".FFC_WARNING").stopTime("ffchide").oneTime(75000, "ffchide",function () {jQuery(this).fadeOut(400,function(){jQuery(this)})});
+		jQuery(".FFC_ERROR").stopTime("ffchide").oneTime(10000, "ffchide",function () {jQuery(this).fadeOut(400,function(){jQuery(this)})});
 }
 
 function showFeedbackMessageInDiv(type, message, divId) {
-	var place = $("#" + divId);
+	var place = jQuery("#" + divId);
 	var mess = {type:type, message:message};
-	place.prepend($.JST.createFromTemplate(mess, "errorTemplate"));
+	place.prepend(jQuery.JST.createFromTemplate(mess, "errorTemplate"));
 	place.fadeIn();
-	$("body").oneTime(1200, function () {
-		$(".FFC_OK").fadeOut();
+	jQuery("body").oneTime(1200, function () {
+		jQuery(".FFC_OK").fadeOut();
 	});
 }
 function hideFeedbackMessages() {
-  $("#__FEEDBACKMESSAGEPLACE").empty();
+  jQuery("#__FEEDBACKMESSAGEPLACE").empty();
 }
 
 
 function submitInBlack(formId, actionHref, w, h) {
 
 	if (!w)
-		w = $(window).width() - 100;
+		w = jQuery(window).width() - 100;
 	if (!h)
-		h = $(window).height() - 50;
+		h = jQuery(window).height() - 50;
 
 	openBlackPopup('', w + "px", h + "px", null, formId + "_ifr");
-	var form = $("#" + formId);
+	var form = jQuery("#" + formId);
 	var oldAction = form.prop("action");
 	var oldTarget = form.prop("target");
 	form.prop("action", actionHref);
 	form.prop("target", formId + "_ifr");
-	$(window).data("openerForm", form);
+	jQuery(window).data("openerForm", form);
 	form.submit();
 	form.prop("action", oldAction);
 	if (oldTarget)
@@ -149,11 +149,11 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
   var localWidth=width,localHeight=height;
 
   if (typeof (width)=="string" && width.indexOf("%")>0 ) {
-    localWidth = function () {return ($(window).width() * parseFloat(width)) / 100};
+    localWidth = function () {return (jQuery(window).width() * parseFloat(width)) / 100};
   }
 
 	if (typeof (height)=="string" && height.indexOf("%")>0)
-    localHeight = function(){return ($(window).height() *  parseFloat(height)) / 100};
+    localHeight = function(){return (jQuery(window).height() *  parseFloat(height)) / 100};
 
 	var popupWidth = localWidth, popupHeight = localHeight;
 
@@ -169,27 +169,27 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
 	if (typeof onCloseCallBack == "string")
 		cssClass = onCloseCallBack;
 
-	//$("#__popup__").remove();
+	//jQuery("#__popup__").remove();
 
 	var popupN = __popups.length+1;
 	__popups.push("__popup__" + popupN);
 
 	var isInIframe = isIframe();
 
-	var bg = $("<div>").prop("id", "__popup__" + popupN);
+	var bg = jQuery("<div>").prop("id", "__popup__" + popupN);
 	bg.addClass("modalPopup" + (isInIframe ? " inIframe" : "")).hide();
 
 	if (cssClass)
 		bg.addClass(cssClass);
 
 	function getMarginTop(){
-		var mt = ($(window).height() - popupHeight)/2 - 100;
+		var mt = (jQuery(window).height() - popupHeight)/2 - 100;
 		return mt < 0 ? 10 : mt;
 	}
 
-	var internalDiv=$("<div>").addClass("bwinPopupd").css({ width:popupWidth, minHeight:popupHeight, marginTop: getMarginTop(), maxHeight:$(window).height()-20, overflow: "auto" });
+	var internalDiv=jQuery("<div>").addClass("bwinPopupd").css({ width:popupWidth, minHeight:popupHeight, marginTop: getMarginTop(), maxHeight:jQuery(window).height()-20, overflow: "auto" });
 
-	$(window).off("resize.popup"+popupN).on("resize.popup"+popupN, function(){
+	jQuery(window).off("resize.popup"+popupN).on("resize.popup"+popupN, function(){
 
 		if(typeof localWidth == "function")
 			popupWidth = localWidth();
@@ -199,10 +199,10 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
 
 		internalDiv.css({ width:popupWidth, minHeight:popupHeight });
 
-		var w = internalDiv.outerWidth() > $(window).width()-20 ? $(window).width()-20 : popupWidth;
-		var h = internalDiv.outerHeight() > $(window).height()-20 ? $(window).height()-20 : popupHeight;
+		var w = internalDiv.outerWidth() > jQuery(window).width()-20 ? jQuery(window).width()-20 : popupWidth;
+		var h = internalDiv.outerHeight() > jQuery(window).height()-20 ? jQuery(window).height()-20 : popupHeight;
 
-    internalDiv.css({ marginTop: getMarginTop(), minHeight: h, maxHeight:$(window).height()-20,minWidth: w });
+    internalDiv.css({ marginTop: getMarginTop(), minHeight: h, maxHeight:jQuery(window).height()-20,minWidth: w });
 
 	});
 
@@ -238,32 +238,32 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
 	};
 
 	if(!element)
-		$("#twMainContainer").addClass("blur");
+		jQuery("#twMainContainer").addClass("blur");
 
 	showBG(bg, 300, function(){})
 	bg.on("click",function(event){
-		if ($(event.target).closest(".bwinPopupd").length <= 0)
+		if (jQuery(event.target).closest(".bwinPopupd").length <= 0)
 			bg.trigger("close");
 	});
 
-	var close = $("<span class=\"teamworkIcon close popUpClose\" style='cursor:pointer;position:absolute;'>x</span>");
+	var close = jQuery("<span class=\"teamworkIcon close popUpClose\" style='cursor:pointer;position:absolute;'>x</span>");
 	internalDiv.append(close);
 
 	close.click(function () {
 		bg.trigger("close");
 	});
 
-	$("body").css({overflowY:"hidden"});
+	jQuery("body").css({overflowY:"hidden"});
 
 	if(!element){
-		$("body").append(bg);
+		jQuery("body").append(bg);
 	}else{
 		element.after(bg);
 	}
 
 	//close call callback
 	bg.on("close", function () {
-		var callBackdata = $(this).data("callBackdata");
+		var callBackdata = jQuery(this).data("callBackdata");
     var ndo=bg;
 
     if (typeof (enableUploadize)=="function")
@@ -289,17 +289,17 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
 
     bg.fadeOut(100, function () {
 
-      $(window).off("resize.popup"+popupN);
+      jQuery(window).off("resize.popup"+popupN);
       bg.remove();
       __popups.pop();
 
       if (__popups.length == 0)
-        $("#twMainContainer").removeClass("blur");
+        jQuery("#twMainContainer").removeClass("blur");
 
       if (typeof(onCloseCallBack) == "function")
         onCloseCallBack(callBackdata);
 
-      $("body").css({overflowY: "auto"});
+      jQuery("body").css({overflowY: "auto"});
     });
 
 	});
@@ -307,11 +307,11 @@ function createModalPopup(width, height, onCloseCallBack, cssClass, element, pop
 	//destroy do not call callback
 	bg.on("destroy", function () {
 		bg.remove();
-		$("body").css({overflowY: "auto"});
+		jQuery("body").css({overflowY: "auto"});
 	});
 
   //rise resize event in order to show buttons
-  $("body").oneTime(1000,"br",function(){$(this).resize();}); // con meno di 1000 non funziona
+  jQuery("body").oneTime(1000,"br",function(){jQuery(this).resize();}); // con meno di 1000 non funziona
 
 
   //si deposita l'popupOpener sul bg. Per riprenderlo si usa getBlackPopupOpener()
@@ -328,7 +328,7 @@ function changeModalSize(w,h){
 		newDim.minHeight = h;
 
 	var isInIframe = isIframe();
-	var popUp = isInIframe ? window.parent.$(".bwinPopupd") : $(".bwinPopupd");
+	var popUp = isInIframe ? window.parent.jQuery(".bwinPopupd") : jQuery(".bwinPopupd");
 
 	if(popUp.length)
 		popUp.delay(300).animate(newDim, 200);
@@ -353,10 +353,10 @@ function openBlackPopup(url, width, height, onCloseCallBack, iframeId, cssClass)
 }
 
 function getBlackPopup() {
-	var ret=$([]);
+	var ret=jQuery([]);
 	if (__popups.length>0) {
 		var id = __popups[__popups.length - 1];
-		ret = $("#" + id);
+		ret = jQuery("#" + id);
 	}
 	if (ret.length==0 && window!=top) {
 		ret = window.parent.getBlackPopup();
@@ -401,7 +401,7 @@ function isIframe() {
 
 function openBulkAction(bulkDivId){
 	var popup=createModalPopup(500,300);
-	popup.append($("#"+bulkDivId).clone().show());
+	popup.append(jQuery("#"+bulkDivId).clone().show());
 }
 
 
@@ -416,23 +416,23 @@ function refreshBulk(el) {
 	var table=el.closest(".dataTable");
 	if (table.find(".selected :checked").length > 0) {
 
-		$("#bulkOp #bulkRowSel").html(table.find("tbody > tr.selected").length + "/" + table.children("tbody").children("tr").length);
+		jQuery("#bulkOp #bulkRowSel").html(table.find("tbody > tr.selected").length + "/" + table.children("tbody").children("tr").length);
 
-		var bukOpt = $("#bulkOp").clone().addClass("bulkOpClone");
+		var bukOpt = jQuery("#bulkOp").clone().addClass("bulkOpClone");
 		bukOpt.fadeIn(200, function(){
-			$("#bulkPlace").html(bukOpt);
-			$.tableHF.refreshTfoot();
+			jQuery("#bulkPlace").html(bukOpt);
+			jQuery.tableHF.refreshTfoot();
 		});
 
 	} else {
-		$(".bulkOpClone").fadeOut(200, function(){
-			$.tableHF.refreshTfoot();
+		jQuery(".bulkOpClone").fadeOut(200, function(){
+			jQuery.tableHF.refreshTfoot();
 		});
 	}
 }
 
 function selUnselAll(el){
-	//var bulkCheckbox = $("#multi td [type='checkbox']");
+	//var bulkCheckbox = jQuery("#multi td [type='checkbox']");
 	var bulkCheckbox = el.closest(".dataTable").find("[type='checkbox']");
 	if (el.is(":checked")){
 		bulkCheckbox.prop("checked", true);

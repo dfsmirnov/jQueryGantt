@@ -23,11 +23,11 @@
 function GridEditor(master) {
   this.master = master; // is the a GantEditor instance
 
-  var editorTabel = $.JST.createFromTemplate({}, "TASKSEDITHEAD");
+  var editorTabel = jQuery.JST.createFromTemplate({}, "TASKSEDITHEAD");
   if (!master.permissions.canSeeDep)
     editorTabel.find(".requireCanSeeDep").hide();
 
-  this.gridified = $.gridify(editorTabel);
+  this.gridified = jQuery.gridify(editorTabel);
   this.element = this.gridified.find(".gdfTable").eq(1);
 
   this.minAllowedDate=new Date(new Date().getTime()-3600000*24*365*20).format();
@@ -47,14 +47,14 @@ GridEditor.prototype.fillEmptyLines = function () {
 
   //fill with empty lines
   for (var i = 0; i < rowsToAdd; i++) {
-    var emptyRow = $.JST.createFromTemplate({}, "TASKEMPTYROW");
+    var emptyRow = jQuery.JST.createFromTemplate({}, "TASKEMPTYROW");
     if (!master.permissions.canSeeDep)
       emptyRow.find(".requireCanSeeDep").hide();
 
     //click on empty row create a task and fill above
     emptyRow.click(function (ev) {
       //console.debug("emptyRow.click")
-      var emptyRow = $(this);
+      var emptyRow = jQuery(this);
       //add on the first empty row only
       if (!master.permissions.canAdd || emptyRow.prevAll(".emptyRow").length > 0)
         return;
@@ -93,7 +93,7 @@ GridEditor.prototype.addTask = function (task, row, hideIfParentCollapsed) {
   //remove extisting row
   this.element.find("#tid_" + task.id).remove();
 
-  var taskRow = $.JST.createFromTemplate(task, "TASKROW");
+  var taskRow = jQuery.JST.createFromTemplate(task, "TASKROW");
 
   if (!this.master.permissions.canSeeDep)
     taskRow.find(".requireCanSeeDep").hide();
@@ -209,7 +209,7 @@ GridEditor.prototype.bindRowEvents = function (task, taskRow) {
 
   //bind row selection
   taskRow.click(function (event) {
-    var row = $(this);
+    var row = jQuery(this);
     //console.debug("taskRow.click",row.attr("taskid"),event.target)
     //var isSel = row.hasClass("rowSelected");
     row.closest("table").find(".rowSelected").removeClass("rowSelected");
@@ -249,7 +249,7 @@ GridEditor.prototype.bindRowEvents = function (task, taskRow) {
 
     taskRow.dblclick(function (ev) { //open editor only if no text has been selected
       if (window.getSelection().toString().trim()=="")
-        self.openFullEditor(task, $(ev.target).closest(".taskAssigs").size()>0)
+        self.openFullEditor(task, jQuery(ev.target).closest(".taskAssigs").size()>0)
       });
   }
   //prof.stop();
@@ -260,7 +260,7 @@ GridEditor.prototype.bindRowExpandEvents = function (task, taskRow) {
   var self = this;
   //expand collapse
   taskRow.find(".exp-controller").click(function () {
-    var el = $(this);
+    var el = jQuery(this);
     var taskId = el.closest("[taskid]").attr("taskid");
     var task = self.master.getTask(taskId);
     if (task.collapsed) {
@@ -276,21 +276,21 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
 
   //bind dateField on dates
   taskRow.find(".date").each(function () {
-    var el = $(this);
+    var el = jQuery(this);
     el.click(function () {
-      var inp = $(this);
+      var inp = jQuery(this);
       inp.dateField({
         inputField: el,
         minDate:self.minAllowedDate,
         maxDate:self.maxAllowedDate,
         callback:   function (d) {
-          $(this).blur();
+          jQuery(this).blur();
         }
       });
     });
 
     el.blur(function (date) {
-      var inp = $(this);
+      var inp = jQuery(this);
       if (inp.isValueChanged()) {
         if (!Date.isValid(inp.val())) {
           alert(GanttMaster.messages["INVALID_DATE_FORMAT"]);
@@ -317,7 +317,7 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
 
   //milestones checkbox
   taskRow.find(":checkbox").click(function () {
-    var el = $(this);
+    var el = jQuery(this);
     var row = el.closest("tr");
     var taskId = row.attr("taskId");
 
@@ -339,10 +339,10 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
 
   //binding on blur for task update (date exluded as click on calendar blur and then focus, so will always return false, its called refreshing the task row)
   taskRow.find("input:text:not(.date)").focus(function () {
-    $(this).updateOldValue();
+    jQuery(this).updateOldValue();
 
   }).blur(function (event) {
-    var el = $(this);
+    var el = jQuery(this);
     var row = el.closest("tr");
     var taskId = row.attr("taskId");
     var task = self.master.getTask(taskId);
@@ -415,7 +415,7 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
         self.master.deleteCurrentTask(taskId);
 
       }else {
-        el.oneTime(1,"foc",function(){$(this).focus()}); //
+        el.oneTime(1,"foc",function(){jQuery(this).focus()}); //
         event.preventDefault();
         //return false;
       }
@@ -425,7 +425,7 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
 
   //cursor key movement
   taskRow.find("input").keydown(function (event) {
-    var theCell = $(this);
+    var theCell = jQuery(this);
     var theTd = theCell.parent();
     var theRow = theTd.parent();
     var col = theTd.prevAll("td").length;
@@ -479,22 +479,22 @@ GridEditor.prototype.bindRowInputEvents = function (task, taskRow) {
     return ret;
 
   }).focus(function () {
-    $(this).closest("tr").click();
+    jQuery(this).closest("tr").click();
   });
 
 
   //change status
   taskRow.find(".taskStatus").click(function () {
-    var el = $(this);
+    var el = jQuery(this);
     var tr = el.closest("[taskid]");
     var taskId = tr.attr("taskid");
     var task = self.master.getTask(taskId);
 
-    var changer = $.JST.createFromTemplate({}, "CHANGE_STATUS");
+    var changer = jQuery.JST.createFromTemplate({}, "CHANGE_STATUS");
     changer.find("[status=" + task.status + "]").addClass("selected");
     changer.find(".taskStatus").click(function (e) {
       e.stopPropagation();
-      var newStatus = $(this).attr("status");
+      var newStatus = jQuery(this).attr("status");
       changer.remove();
       self.master.beginTransaction();
       task.changeStatus(newStatus);
@@ -521,7 +521,7 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
   var taskId = taskRow.attr("taskId");
 
   //make task editor
-  var taskEditor = $.JST.createFromTemplate(task, "TASK_EDITOR");
+  var taskEditor = jQuery.JST.createFromTemplate(task, "TASK_EDITOR");
 
   //hide task data if editing assig only
   if (editOnlyAssig) {
@@ -575,7 +575,7 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
   // loop on assignments
   for (var i = 0; i < task.assigs.length; i++) {
     var assig = task.assigs[i];
-    var assigRow = $.JST.createFromTemplate({task: task, assig: assig}, "ASSIGNMENT_ROW");
+    var assigRow = jQuery.JST.createFromTemplate({task: task, assig: assig}, "ASSIGNMENT_ROW");
     assigsTable.append(assigRow);
   }
 
@@ -591,17 +591,17 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
 
     //bind dateField on dates, duration
     taskEditor.find("#start,#end,#duration").click(function () {
-      var input = $(this);
+      var input = jQuery(this);
       if (input.is("[entrytype=DATE]")) {
         input.dateField({
           inputField: input,
           minDate:self.minAllowedDate,
           maxDate:self.maxAllowedDate,
-          callback:   function (d) {$(this).blur();}
+          callback:   function (d) {jQuery(this).blur();}
         });
       }
     }).blur(function () {
-      var inp = $(this);
+      var inp = jQuery(this);
       if (inp.validateField()) {
         resynchDates(inp, taskEditor.find("[name=start]"), taskEditor.find("[name=startIsMilestone]"), taskEditor.find("[name=duration]"), taskEditor.find("[name=end]"), taskEditor.find("[name=endIsMilestone]"));
         //workload computation
@@ -611,7 +611,7 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
     });
 
     taskEditor.find("#startIsMilestone,#endIsMilestone").click(function () {
-      var inp = $(this);
+      var inp = jQuery(this);
       resynchDates(inp, taskEditor.find("[name=start]"), taskEditor.find("[name=startIsMilestone]"), taskEditor.find("[name=duration]"), taskEditor.find("[name=end]"), taskEditor.find("[name=endIsMilestone]"));
     });
 
@@ -620,9 +620,9 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
     taskEditor.find("#addAssig").click(function () {
       cnt++;
       var assigsTable = taskEditor.find("#assigsTable");
-      var assigRow = $.JST.createFromTemplate({task: task, assig: {id: "tmp_" + new Date().getTime()+"_"+cnt}}, "ASSIGNMENT_ROW");
+      var assigRow = jQuery.JST.createFromTemplate({task: task, assig: {id: "tmp_" + new Date().getTime()+"_"+cnt}}, "ASSIGNMENT_ROW");
       assigsTable.append(assigRow);
-      $("#bwinPopupd").scrollTop(10000);
+      jQuery("#bwinPopupd").scrollTop(10000);
     }).click();
 
     //save task
@@ -647,7 +647,7 @@ GridEditor.prototype.openFullEditor = function (task, editOnlyAssig) {
       //set assignments
       var cnt=0;
       taskEditor.find("tr[assId]").each(function () {
-        var trAss = $(this);
+        var trAss = jQuery(this);
         var assId = trAss.attr("assId");
         var resId = trAss.find("[name=resourceId]").val();
         var resName = trAss.find("[name=resourceId_txt]").val(); // from smartcombo text input part

@@ -34,7 +34,7 @@ if (inProduction) {
   window.console = undefined;
 }
 
-// deprecated use $("#domid")...
+// deprecated use jQuery("#domid")...
 function obj(element) {
 	if (arguments.length > 1) {
 		alert("invalid use of obj with multiple params:" + element)
@@ -167,7 +167,7 @@ jQuery.fn.activateLinks = function (showImages) {
 
 
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		var html = el.html();
 
 		if (showImages) {
@@ -190,7 +190,7 @@ jQuery.fn.activateLinks = function (showImages) {
 		if (showImages) {
 			//inject expand capability on images
 			el.find("div.imgWrap").each(function () {
-				var imageDiv = $(this);
+				var imageDiv = jQuery(this);
 
 
 				imageDiv.click(function (e) {
@@ -199,7 +199,7 @@ jQuery.fn.activateLinks = function (showImages) {
 					} else {
 						var imageClone = imageDiv.find("img").clone();
 						imageClone.mouseout(function () {
-							$(this).remove();
+							jQuery(this).remove();
 						});
 						imageClone.addClass("imageClone").css({"position":"absolute", "display":"none", "top":imageDiv.position().top, "left":imageDiv.position().left, "z-index":1000000});
 						imageDiv.after(imageClone);
@@ -253,7 +253,7 @@ jQuery.fn.emoticonize = function () {
 	}
 
 	this.each(function () {
-		var el = $(this);
+		var el = jQuery(this);
 		var html = convert(el.html());
 		html = addBold(html);
 		el.html(html);
@@ -262,18 +262,18 @@ jQuery.fn.emoticonize = function () {
 };
 
 
-$.fn.unselectable = function () {
+jQuery.fn.unselectable = function () {
 	this.each(function () {
-		$(this).addClass("unselectable").attr("unselectable", "on");
+		jQuery(this).addClass("unselectable").attr("unselectable", "on");
 	});
-	return $(this);
+	return jQuery(this);
 };
 
-$.fn.clearUnselectable = function () {
+jQuery.fn.clearUnselectable = function () {
 	this.each(function () {
-		$(this).removeClass("unselectable").removeAttr("unselectable");
+		jQuery(this).removeClass("unselectable").removeAttr("unselectable");
 	});
-	return $(this);
+	return jQuery(this);
 };
 
 // ---------------------------------- initialize management
@@ -282,18 +282,18 @@ var __initedComponents = new Object();
 function initialize(url, type, ndo) {
   //console.debug("initialize before: " + url);
   var normUrl = url.asId();
-  var deferred = $.Deferred();
+  var deferred = jQuery.Deferred();
 
   if (!__initedComponents[normUrl]) {
     __initedComponents[normUrl] = deferred;
 
     if ("CSS" == (type + "").toUpperCase()) {
-      var link = $("<link rel='stylesheet' type='text/css'>").prop("href", url);
-      $("head").append(link);
+      var link = jQuery("<link rel='stylesheet' type='text/css'>").prop("href", url);
+      jQuery("head").append(link);
       deferred.resolve();
 
     } else if ("SCRIPT" == (type + "").toUpperCase()) {
-      $.ajax({type: "GET",
+      jQuery.ajax({type: "GET",
         url:        url + "?" + buildNumber,
         dataType:   "script",
         cache:      true,
@@ -312,14 +312,14 @@ function initialize(url, type, ndo) {
       //console.debug(url+" as DOM");
       //var text = getContent(url);
       url = url + (url.indexOf("?") > -1 ? "&" : "?") + buildNumber;
-      var text = $.ajax({
+      var text = jQuery.ajax({
         type:     "GET",
         url:      url,
         dataType: "html",
         cache:    true,
         success:  function (text) {
           //console.debug("initialize loaded:" + url);
-          ndo = ndo || $("body");
+          ndo = ndo || jQuery("body");
           ndo.append(text);
           deferred.resolve()
         },
@@ -339,12 +339,12 @@ function initialize(url, type, ndo) {
  *  callback receive event, data
  *  data.response  contiene la response json arrivata dal controller
  *  E.G.:
- *     $("body").trigger("worklogEvent",[{type:"delete",response:response}])
+ *     jQuery("body").trigger("worklogEvent",[{type:"delete",response:response}])
  *
  *     in caso di delete di solito c'è il response.deletedId
  */
 function registerEvent(eventName,callback) {
-  $("body").off(eventName).on(eventName, callback);
+  jQuery("body").off(eventName).on(eventName, callback);
 }
 
 
@@ -357,15 +357,15 @@ function openPersistentFile(file) {
   } catch(e) {}
 
   if (file.mime.indexOf("image") >= 0) {
-    var img = $("<img>").prop("src", file.url).css({position: "absolute", top: "-10000px", left: "-10000px"}).one("load", function () {
+    var img = jQuery("<img>").prop("src", file.url).css({position: "absolute", top: "-10000px", left: "-10000px"}).one("load", function () {
       //console.debug("image loaded");
-      var img = $(this);
+      var img = jQuery(this);
       var w = img.width();
       var h = img.height();
       //console.debug("image loaded",w,h);
       var f=w/h;
-      var ww = $(t).width()*.8;
-      var wh = $(t).height()*.8;
+      var ww = jQuery(t).width()*.8;
+      var wh = jQuery(t).height()*.8;
       if (w>ww){
         w=ww;
         h=w/f;
@@ -380,9 +380,9 @@ function openPersistentFile(file) {
 
       t.createModalPopup(w+100,h+100).append(img);
     });
-    t.$("body").append(img);
+    t.jQuery("body").append(img);
   } else if (file.mime.indexOf("pdf") >= 0) {
-    t.openBlackPopup(file.url, $(t).width()*.8, $(t).height()*.8);
+    t.openBlackPopup(file.url, jQuery(t).width()*.8, jQuery(t).height()*.8);
 	} else {
 		window.open(file.url + "&TREATASATTACH=yes");
 	}
@@ -426,14 +426,14 @@ function objectSize(size) {
 function htmlEncode(value){
   //create a in-memory div, set it's inner text(which jQuery automatically encodes)
   //then grab the encoded contents back out.  The div never exists on the page.
-  return $('<div/>').text(value).html();
+  return jQuery('<div/>').text(value).html();
 }
 
 function htmlLinearize(value, length){
 	value = value.replace(/(\r\n|\n|\r)/gm,"").replace(/<br>/g, " - ");
 	value = value.replace(/-  -/g, "-");
 
-	var ret = $('<div/>').text(value).text();
+	var ret = jQuery('<div/>').text(value).text();
 
 	if(length){
 		var ellips = ret.length > length ? "..." : "";
@@ -444,7 +444,7 @@ function htmlLinearize(value, length){
 }
 
 function htmlDecode(value){
-  return $('<div/>').html(value).text();
+  return jQuery('<div/>').html(value).text();
 }
 
 
@@ -486,10 +486,10 @@ function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-$.fn.isEmptyElement = function( ){
-	return !$.trim($(this).html())
+jQuery.fn.isEmptyElement = function( ){
+	return !jQuery.trim(jQuery(this).html())
 };
 
 //workaround for jquery 3.x
-if (typeof ($.fn.size)!="funcion")
-  $.fn.size=function(){return this.length};
+if (typeof (jQuery.fn.size)!="funcion")
+  jQuery.fn.size=function(){return this.length};

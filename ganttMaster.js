@@ -91,7 +91,7 @@ function GanttMaster() {
 
 
 GanttMaster.prototype.init = function (workSpace) {
-  var place=$("<div>").prop("id","TWGanttArea").css( {padding:0, "overflow-y":"auto", "overflow-x":"hidden","border":"1px solid #e5e5e5",position:"relative"});
+  var place=jQuery("<div>").prop("id","TWGanttArea").css( {padding:0, "overflow-y":"auto", "overflow-x":"hidden","border":"1px solid #e5e5e5",position:"relative"});
   workSpace.append(place).addClass("TWGanttWorkSpace");
 
   this.workSpace=workSpace;
@@ -103,7 +103,7 @@ GanttMaster.prototype.init = function (workSpace) {
 
   var self = this;
   //load templates
-  $("#gantEditorTemplates").loadTemplates().remove();
+  jQuery("#gantEditorTemplates").loadTemplates().remove();
 
   //create editor
   this.editor = new GridEditor(this);
@@ -113,12 +113,12 @@ GanttMaster.prototype.init = function (workSpace) {
   this.gantt = new Ganttalendar(new Date().getTime() - 3600000 * 24 * 2, new Date().getTime() + 3600000 * 24 * 5, this, place.width() * .6);
 
   //setup splitter
-  self.splitter = $.splittify.init(place, this.editor.gridified, this.gantt.element, 60);
+  self.splitter = jQuery.splittify.init(place, this.editor.gridified, this.gantt.element, 60);
   self.splitter.firstBoxMinWidth = 5;
   self.splitter.secondBoxMinWidth = 20;
 
   //prepend buttons
-  var ganttButtons = $.JST.createFromTemplate({}, "GANTBUTTONS");
+  var ganttButtons = jQuery.JST.createFromTemplate({}, "GANTBUTTONS");
   place.before(ganttButtons);
   this.checkButtonPermissions();
 
@@ -192,16 +192,16 @@ GanttMaster.prototype.init = function (workSpace) {
 
 
   //keyboard management bindings
-  $("body").bind("keydown.body", function (e) {
+  jQuery("body").bind("keydown.body", function (e) {
     //console.debug(e.keyCode+ " "+e.target.nodeName, e.ctrlKey)
 
     var eventManaged = true;
     var isCtrl = e.ctrlKey || e.metaKey;
     var bodyOrSVG = e.target.nodeName.toLowerCase() == "body" || e.target.nodeName.toLowerCase() == "svg";
-    var inWorkSpace=$(e.target).closest("#TWGanttArea").length>0;
+    var inWorkSpace=jQuery(e.target).closest("#TWGanttArea").length>0;
 
     //store focused field
-    var focusedField=$(":focus");
+    var focusedField=jQuery(":focus");
     var focusedSVGElement = self.gantt.element.find(".focused.focused");// orrible hack for chrome that seems to keep in memory a cached object
 
     var isFocusedSVGElement=focusedSVGElement.length >0;
@@ -251,17 +251,17 @@ GanttMaster.prototype.init = function (workSpace) {
   });
 
   //ask for comment input
-  $("#saveGanttButton").after($('#LOG_CHANGES_CONTAINER'));
+  jQuery("#saveGanttButton").after(jQuery('#LOG_CHANGES_CONTAINER'));
 
   //ask for comment management
   this.element.on("saveRequired.gantt",this.manageSaveRequired);
 
 
   //resize
-  $(window).resize(function () {
-    place.css({width: "100%", height: $(window).height() - place.position().top});
+  jQuery(window).resize(function () {
+    place.css({width: "100%", height: jQuery(window).height() - place.position().top});
     place.trigger("resize.gantt");
-  }).oneTime(2, "resize", function () {$(window).trigger("resize")});
+  }).oneTime(2, "resize", function () {jQuery(window).trigger("resize")});
 
 
 };
@@ -424,7 +424,7 @@ GanttMaster.prototype.addTask = function (task, row) {
   }
 
 //trigger addedTask event 
-  $(this.element).trigger("addedTask.gantt", task);
+  jQuery(this.element).trigger("addedTask.gantt", task);
   return ret;
 };
 
@@ -618,7 +618,7 @@ GanttMaster.prototype.taskIsChanged = function () {
 
 
 GanttMaster.prototype.checkButtonPermissions = function () {
-  var ganttButtons=$(".ganttButtonBar");
+  var ganttButtons=jQuery(".ganttButtonBar");
   //hide buttons basing on permissions
   if (!this.permissions.canWrite)
     ganttButtons.find(".requireCanWrite").hide();
@@ -714,7 +714,7 @@ GanttMaster.prototype.saveGantt = function (forTransaction) {
     this.markUnChangedTasksAndAssignments(ret);
 
     //si aggiunge il commento al cambiamento di date/status
-    ret.changesReasonWhy=$("#LOG_CHANGES").val();
+    ret.changesReasonWhy=jQuery("#LOG_CHANGES").val();
 
   }
 
@@ -1151,7 +1151,7 @@ GanttMaster.prototype.collapseAll = function () {
 GanttMaster.prototype.fullScreen = function () {
   //console.debug("fullScreen");
   this.workSpace.toggleClass("ganttFullScreen").resize();
-  $("#fullscrbtn .teamworkIcon").html(this.workSpace.is(".ganttFullScreen")?"€":"@");
+  jQuery("#fullscrbtn .teamworkIcon").html(this.workSpace.is(".ganttFullScreen")?"€":"@");
 };
 
 
@@ -1388,14 +1388,14 @@ GanttMaster.prototype.saveRequired = function () {
   //console.debug("saveRequired")
   //show/hide save button
   if(this.__undoStack.length>0 ) {
-    $("#saveGanttButton").removeClass("disabled");
-    $("form[alertOnChange] #Gantt").val(new Date().getTime()); // set a fake variable as dirty
+    jQuery("#saveGanttButton").removeClass("disabled");
+    jQuery("form[alertOnChange] #Gantt").val(new Date().getTime()); // set a fake variable as dirty
     this.element.trigger("saveRequired.gantt",[true]);
 
 
   } else {
-    $("#saveGanttButton").addClass("disabled");
-    $("form[alertOnChange] #Gantt").updateOldValue(); // set a fake variable as clean
+    jQuery("#saveGanttButton").addClass("disabled");
+    jQuery("form[alertOnChange] #Gantt").updateOldValue(); // set a fake variable as clean
     this.element.trigger("saveRequired.gantt",[false]);
 
   }
@@ -1670,14 +1670,14 @@ GanttMaster.prototype.manageSaveRequired=function(ev, showSave) {
         }
       }
     }
-    $("#LOG_CHANGES_CONTAINER").css("display", changes ? "inline-block" : "none");
+    jQuery("#LOG_CHANGES_CONTAINER").css("display", changes ? "inline-block" : "none");
   }
 
 
   if (showSave) {
-    $("body").stopTime("gantt.manageSaveRequired").oneTime(200, "gantt.manageSaveRequired", checkChanges);
+    jQuery("body").stopTime("gantt.manageSaveRequired").oneTime(200, "gantt.manageSaveRequired", checkChanges);
   } else {
-    $("#LOG_CHANGES_CONTAINER").hide();
+    jQuery("#LOG_CHANGES_CONTAINER").hide();
   }
 
 }

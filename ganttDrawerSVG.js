@@ -100,7 +100,7 @@ Ganttalendar.prototype.storeZoomLevel = function () {
 
 Ganttalendar.prototype.createHeadCell=function(level,zoomDrawer,rowCtx,lbl, span, additionalClass,start, end) {
   var x = (start.getTime() - self.startMillis)* zoomDrawer.computedScaleX;
-  var th = $("<th>").html(lbl).attr("colSpan", span);
+  var th = jQuery("<th>").html(lbl).attr("colSpan", span);
   if (level>1) { //set width on second level only
     var w = (end.getTime() - start.getTime()) * zoomDrawer.computedScaleX;
     th.width(w);
@@ -111,7 +111,7 @@ Ganttalendar.prototype.createHeadCell=function(level,zoomDrawer,rowCtx,lbl, span
 };
 
 Ganttalendar.prototype.createBodyCell=function(zoomDrawer,tr,span, isEnd, additionalClass) {
-  var ret = $("<td>").html("").attr("colSpan", span).addClass("ganttBodyCell");
+  var ret = jQuery("<td>").html("").attr("colSpan", span).addClass("ganttBodyCell");
   if (isEnd)
     ret.addClass("end");
   if (additionalClass)
@@ -143,19 +143,19 @@ Ganttalendar.prototype.createGanttGrid = function () {
     //set a minimal width
     computedTableWidth = Math.max(computedTableWidth, self.minGanttSize);
 
-    var table = $("<table cellspacing=0 cellpadding=0>");
+    var table = jQuery("<table cellspacing=0 cellpadding=0>");
 
     //loop for header1
   var start = new Date(self.startMillis);
-    var tr1 = $("<tr>").addClass("ganttHead1");
+    var tr1 = jQuery("<tr>").addClass("ganttHead1");
   while (start.getTime() <= self.endMillis) {
       zoomDrawer.row1(start,tr1);
       }
 
     //loop for header2  e tbody
   start = new Date(self.startMillis);
-    var tr2 = $("<tr>").addClass("ganttHead2");
-    var trBody = $("<tr>").addClass("ganttBody");
+    var tr2 = jQuery("<tr>").addClass("ganttHead2");
+    var trBody = jQuery("<tr>").addClass("ganttBody");
   while (start.getTime() <= self.endMillis) {
     zoomDrawer.row2(start,tr2,trBody);
     }
@@ -170,7 +170,7 @@ Ganttalendar.prototype.createGanttGrid = function () {
     var height = self.master.editor.element.height();
     table.height(height);
 
-    var box = $("<div>");
+    var box = jQuery("<div>");
     box.addClass("gantt unselectable").attr("unselectable", "true").css({position:"relative", width:computedTableWidth});
     box.append(table);
     box.append(head);
@@ -188,7 +188,7 @@ Ganttalendar.prototype.createGanttGrid = function () {
         var img=svg.image(extDep, 0, 0, 10, 10, self.master.resourceUrl +"hasExternalDeps.png",{opacity:.3});
 
         self.svg = svg;
-        $(svg).addClass("ganttSVGBox");
+        jQuery(svg).addClass("ganttSVGBox");
 
         //creates grid group
         var gridGroup = svg.group("gridGroup");
@@ -220,13 +220,13 @@ Ganttalendar.prototype.drawTask = function (task) {
 		var baseline = self.master.baselines[task.id];
 		if (baseline) {
 			//console.debug("baseLine",baseline)
-			var baseTask = $(_createBaselineSVG(task, baseline));
+			var baseTask = jQuery(_createBaselineSVG(task, baseline));
 			baseTask.css("opacity", .5);
 			task.ganttBaselineElement = baseTask;
 		}
 	}
 
-	var taskBox = $(_createTaskSVG(task));
+	var taskBox = jQuery(_createTaskSVG(task));
   task.ganttElement = taskBox;
 
 
@@ -240,14 +240,14 @@ Ganttalendar.prototype.drawTask = function (task) {
       .click(function (e) { // manages selection
         e.stopPropagation();// to avoid body remove focused
         self.element.find("[class*=focused]").removeClass("focused");
-        $(".ganttSVGBox .focused").removeClass("focused");
-        var el = $(this);
+        jQuery(".ganttSVGBox .focused").removeClass("focused");
+        var el = jQuery(this);
         if (!self.resDrop)
           el.addClass("focused");
         self.resDrop = false; //hack to avoid select
 
-        $("body").off("click.focused").one("click.focused", function () {
-          $(".ganttSVGBox .focused").removeClass("focused");
+        jQuery("body").off("click.focused").one("click.focused", function () {
+          jQuery(".ganttSVGBox .focused").removeClass("focused");
         })
 
       }).dblclick(function () {
@@ -255,35 +255,35 @@ Ganttalendar.prototype.drawTask = function (task) {
           self.master.editor.openFullEditor(task,false);
       }).mouseenter(function () {
         //bring to top
-        var el = $(this);
+        var el = jQuery(this);
         if (!self.linkOnProgress) {
-          $("[class*=linkHandleSVG]").hide();
+          jQuery("[class*=linkHandleSVG]").hide();
           el.find("[class*=linkHandleSVG]").stopTime("hideLink").show();
         } else {
           el.addClass("linkOver");
         }
       }).mouseleave(function () {
-        var el = $(this);
-        el.removeClass("linkOver").find("[class*=linkHandleSVG]").oneTime(500,"hideLink",function(){$(this).hide()});
+        var el = jQuery(this);
+        el.removeClass("linkOver").find("[class*=linkHandleSVG]").oneTime(500,"hideLink",function(){jQuery(this).hide()});
 
       }).mouseup(function (e) {
-        $(":focus").blur(); // in order to save grid field when moving task
+        jQuery(":focus").blur(); // in order to save grid field when moving task
       }).mousedown(function () {
-        var task = self.master.getTask($(this).attr("taskid"));
+        var task = self.master.getTask(jQuery(this).attr("taskid"));
         task.rowElement.click();
-      }).dragExtedSVG($(self.svg.root()), {
+      }).dragExtedSVG(jQuery(self.svg.root()), {
         canResize:  this.master.permissions.canWrite || task.canWrite,
         canDrag:    !task.depends && (this.master.permissions.canWrite || task.canWrite),
         resizeZoneWidth:self.resizeZoneWidth,
         startDrag:  function (e) {
-          $(".ganttSVGBox .focused").removeClass("focused");
+          jQuery(".ganttSVGBox .focused").removeClass("focused");
         },
         drag:       function (e) {
-          $("[from=" + task.id + "],[to=" + task.id + "]").trigger("update");
+          jQuery("[from=" + task.id + "],[to=" + task.id + "]").trigger("update");
         },
         drop:       function (e) {
           self.resDrop = true; //hack to avoid select
-          var taskbox = $(this);
+          var taskbox = jQuery(this);
           var task = self.master.getTask(taskbox.attr("taskid"));
           var s = Math.round((parseFloat(taskbox.attr("x")) / self.fx) + self.startMillis);
           self.master.beginTransaction();
@@ -291,28 +291,28 @@ Ganttalendar.prototype.drawTask = function (task) {
           self.master.endTransaction();
         },
         startResize:function (e) {
-          $(".ganttSVGBox .focused").removeClass("focused");
-          var taskbox = $(this);
-          var text = $(self.svg.text(parseInt(taskbox.attr("x")) + parseInt(taskbox.attr("width") + 8), parseInt(taskbox.attr("y")), "", {"font-size":"10px", "fill":"red"}));
+          jQuery(".ganttSVGBox .focused").removeClass("focused");
+          var taskbox = jQuery(this);
+          var text = jQuery(self.svg.text(parseInt(taskbox.attr("x")) + parseInt(taskbox.attr("width") + 8), parseInt(taskbox.attr("y")), "", {"font-size":"10px", "fill":"red"}));
           taskBox.data("textDur", text);
         },
         resize:     function (e) {
           //find and update links from, to
-          var taskbox = $(this);
+          var taskbox = jQuery(this);
           var st = Math.round((parseFloat(taskbox.attr("x")) / self.fx) + self.startMillis);
           var en = Math.round(((parseFloat(taskbox.attr("x")) + parseFloat(taskbox.attr("width"))) / self.fx) + self.startMillis);
 						var d = getDurationInUnits(computeStartDate(st), computeEndDate(en));
           var text = taskBox.data("textDur");
           text.attr("x", parseInt(taskbox.attr("x")) + parseInt(taskbox.attr("width")) + 8).html(durationToString(d));
 
-          $("[from=" + task.id + "],[to=" + task.id + "]").trigger("update");
+          jQuery("[from=" + task.id + "],[to=" + task.id + "]").trigger("update");
         },
         stopResize: function (e) {
           self.resDrop = true; //hack to avoid select
           var textBox = taskBox.data("textDur");
           if (textBox)
             textBox.remove();
-          var taskbox = $(this);
+          var taskbox = jQuery(this);
           var task = self.master.getTask(taskbox.attr("taskid"));
           var st = Math.round((parseFloat(taskbox.attr("x")) / self.fx) + self.startMillis);
           var en = Math.round(((parseFloat(taskbox.attr("x")) + parseFloat(taskbox.attr("width"))) / self.fx) + self.startMillis);
@@ -335,11 +335,11 @@ Ganttalendar.prototype.drawTask = function (task) {
     taskBox.find("[class*=linkHandleSVG]").mousedown(function (e) {
       e.preventDefault();
       e.stopPropagation();
-      var taskBox = $(this).closest(".taskBoxSVG");
-      var svg = $(self.svg.root());
+      var taskBox = jQuery(this).closest(".taskBoxSVG");
+      var svg = jQuery(self.svg.root());
       var offs = svg.offset();
       self.linkOnProgress = true;
-      self.linkFromEnd = $(this).is(".taskLinkEndSVG");
+      self.linkFromEnd = jQuery(this).is(".taskLinkEndSVG");
       svg.addClass("linkOnProgress");
 
       // create the line
@@ -361,14 +361,14 @@ Ganttalendar.prototype.drawTask = function (task) {
       });
 
       //bind mouseup un body to stop
-      $("body").one("mouseup.linkSVG", function (e) {
-        $(line).remove();
-        $(circle).remove();
+      jQuery("body").one("mouseup.linkSVG", function (e) {
+        jQuery(line).remove();
+        jQuery(circle).remove();
         self.linkOnProgress = false;
         svg.removeClass("linkOnProgress");
 
-        $(self.svg.root()).unbind("mousemove.linkSVG");
-        var targetBox = $(e.target).closest(".taskBoxSVG");
+        jQuery(self.svg.root()).unbind("mousemove.linkSVG");
+        var targetBox = jQuery(e.target).closest(".taskBoxSVG");
         //console.debug("create link from " + taskBox.attr("taskid") + " to " + targetBox.attr("taskid"));
 
         if (targetBox && targetBox.attr("taskid") != taskBox.attr("taskid")) {
@@ -478,7 +478,7 @@ Ganttalendar.prototype.drawTask = function (task) {
 		label += "<br>";
 		label += "<b>Progress:</b> " + baseline.progress + "%";
 
-		$(taskSvg).attr("data-label", label).on("click", function (event) {
+		jQuery(taskSvg).attr("data-label", label).on("click", function (event) {
 			showBaselineInfo(event, this);
 			//bind hide
 		});
@@ -548,7 +548,7 @@ Ganttalendar.prototype.drawLink = function (from, to, type) {
 
     //this function update an existing link
     function update() {
-      var group = $(this);
+      var group = jQuery(this);
       var from = group.data("from");
       var to = group.data("to");
 
@@ -616,7 +616,7 @@ Ganttalendar.prototype.drawLink = function (from, to, type) {
     svg.path(group, p, {class:"taskLinkPathSVG"});
 
     //set "from" and "to" to the group, bind "update" and trigger it
-    var jqGroup = $(group).data({from:from, to:to }).attr({from:from.id, to:to.id}).on("update", update).trigger("update");
+    var jqGroup = jQuery(group).data({from:from, to:to }).attr({from:from.id, to:to.id}).on("update", update).trigger("update");
 
     if (self.showCriticalPath && from.isCritical && to.isCritical)
       jqGroup.addClass("critical");
@@ -646,17 +646,17 @@ Ganttalendar.prototype.drawLink = function (from, to, type) {
   // in order to create a dependency you will need permissions on both tasks
   if (this.master.permissions.canWrite || ( from.canWrite && to.canWrite)) {
     link.click(function (e) {
-      var el = $(this);
+      var el = jQuery(this);
       e.stopPropagation();// to avoid body remove focused
       self.element.find("[class*=focused]").removeClass("focused");
-      $(".ganttSVGBox .focused").removeClass("focused");
-      var el = $(this);
+      jQuery(".ganttSVGBox .focused").removeClass("focused");
+      var el = jQuery(this);
       if (!self.resDrop)
         el.addClass("focused");
       self.resDrop = false; //hack to avoid select
 
-      $("body").off("click.focused").one("click.focused", function () {
-        $(".ganttSVGBox .focused").removeClass("focused");
+      jQuery("body").off("click.focused").one("click.focused", function () {
+        jQuery(".ganttSVGBox .focused").removeClass("focused");
       })
 
     });
@@ -674,7 +674,7 @@ Ganttalendar.prototype.redrawLinks = function () {
     //var prof=new Profiler("gd_drawLink_real");
 
     //remove all links
-    $("#linksGroup").empty();
+    jQuery("#linksGroup").empty();
 
     var collapsedDescendant = [];
 
@@ -718,8 +718,8 @@ Ganttalendar.prototype.redrawTasks = function (drawAll) {
   var startRowAdd=self.master.firstScreenLine-self.master.rowBufferSize;
   var endRowAdd =self.master.firstScreenLine+self.master.numOfVisibleRows+self.master.rowBufferSize;
 
-  $("#linksGroup,#tasksGroup").empty();
-  var gridGroup=$("#gridGroup").empty().get(0);
+  jQuery("#linksGroup,#tasksGroup").empty();
+  var gridGroup=jQuery("#gridGroup").empty().get(0);
 
   //add missing ones
   var row=0;
@@ -859,7 +859,7 @@ Ganttalendar.prototype.synchHighlight = function () {
     var ganttHighLighterPosition=this.master.editor.element.find(".taskEditRow:visible").index(this.master.currentTask.rowElement);
     this.master.gantt.element.find(".ganttLinesSVG").removeClass("rowSelected").eq(ganttHighLighterPosition).addClass("rowSelected");
   } else {
-    $(".rowSelected").removeClass("rowSelected"); // todo non c'era
+    jQuery(".rowSelected").removeClass("rowSelected"); // todo non c'era
   }
 };
 
@@ -883,7 +883,7 @@ Ganttalendar.prototype.centerOnToday = function () {
  * @param opt
  * @return {*}
  */
-$.fn.dragExtedSVG = function (svg, opt) {
+jQuery.fn.dragExtedSVG = function (svg, opt) {
 
   //doing this can work with one svg at once only
   var target;
@@ -903,10 +903,10 @@ $.fn.dragExtedSVG = function (svg, opt) {
     stopResize:     function (e) {}
   };
 
-  $.extend(options, opt);
+  jQuery.extend(options, opt);
 
   this.each(function () {
-    var el = $(this);
+    var el = jQuery(this);
     svgX = svg.parent().offset().left; //parent is used instead of svg for a Firefox oddity
     if (options.canDrag)
       el.addClass("deSVGdrag");
@@ -914,16 +914,16 @@ $.fn.dragExtedSVG = function (svg, opt) {
     if (options.canResize || options.canDrag) {
       el.bind("mousedown.deSVG",function (e) {
           //console.debug("mousedown.deSVG");
-          if ($(e.target).is("image")) {
+          if (jQuery(e.target).is("image")) {
             e.preventDefault();
           }
 
-          target = $(this);
+          target = jQuery(this);
           var x1 = parseFloat(el.find("[class*=taskLayout]").offset().left);
           var x2 = x1 + parseFloat(el.attr("width"));
           var posx = e.pageX;
 
-          $("body").unselectable();
+          jQuery("body").unselectable();
 
           //start resize end
           if (options.canResize && Math.abs(posx-x2)<=options.resizeZoneWidth) {
@@ -933,9 +933,9 @@ $.fn.dragExtedSVG = function (svg, opt) {
             var one = true;
 
             //bind event for start resizing
-            $(svg).bind("mousemove.deSVG", function (e) {
+            jQuery(svg).bind("mousemove.deSVG", function (e) {
               //hide link circle
-              $("[class*=linkHandleSVG]").hide();
+              jQuery("[class*=linkHandleSVG]").hide();
 
               if (one) {
                 //trigger startResize
@@ -952,7 +952,7 @@ $.fn.dragExtedSVG = function (svg, opt) {
             });
 
             //bind mouse up on body to stop resizing
-            $("body").one("mouseup.deSVG", stopResize);
+            jQuery("body").one("mouseup.deSVG", stopResize);
 
 
           //start resize start
@@ -964,9 +964,9 @@ $.fn.dragExtedSVG = function (svg, opt) {
             var one = true;
 
             //bind event for start resizing
-            $(svg).bind("mousemove.deSVG", function (e) {
+            jQuery(svg).bind("mousemove.deSVG", function (e) {
               //hide link circle
-              $("[class*=linkHandleSVG]").hide();
+              jQuery("[class*=linkHandleSVG]").hide();
 
               if (one) {
                 //trigger startResize
@@ -985,7 +985,7 @@ $.fn.dragExtedSVG = function (svg, opt) {
             });
 
             //bind mouse up on body to stop resizing
-            $("body").one("mouseup.deSVG", stopResize);
+            jQuery("body").one("mouseup.deSVG", stopResize);
 
 
             // start drag
@@ -996,9 +996,9 @@ $.fn.dragExtedSVG = function (svg, opt) {
 
             var one = true;
             //bind event for start dragging
-            $(svg).bind("mousemove.deSVG",function (e) {
+            jQuery(svg).bind("mousemove.deSVG",function (e) {
               //hide link circle
-              $("[class*=linkHandleSVG]").hide();
+              jQuery("[class*=linkHandleSVG]").hide();
               if (one) {
                 //trigger startDrag
                 options.startDrag.call(target.get(0), e);
@@ -1013,13 +1013,13 @@ $.fn.dragExtedSVG = function (svg, opt) {
             }).bind("mouseleave.deSVG", drop);
 
             //bind mouse up on body to stop resizing
-            $("body").one("mouseup.deSVG", drop);
+            jQuery("body").one("mouseup.deSVG", drop);
 
           }
         }
       ).bind("mousemove.deSVG",
         function (e) {
-          var el = $(this);
+          var el = jQuery(this);
           var x1 = el.find("[class*=taskLayout]").offset().left;
           var x2 = x1 + parseFloat(el.attr("width"));
           var posx = e.pageX;
@@ -1039,19 +1039,19 @@ $.fn.dragExtedSVG = function (svg, opt) {
 
 
   function stopResize(e) {
-    $(svg).unbind("mousemove.deSVG").unbind("mouseup.deSVG").unbind("mouseleave.deSVG");
+    jQuery(svg).unbind("mousemove.deSVG").unbind("mouseup.deSVG").unbind("mouseleave.deSVG");
     if (target && target.attr("oldw")!=target.attr("width"))
       options.stopResize.call(target.get(0), e); //callback
     target = undefined;
-    $("body").clearUnselectable();
+    jQuery("body").clearUnselectable();
   }
 
   function drop(e) {
-    $(svg).unbind("mousemove.deSVG").unbind("mouseup.deSVG").unbind("mouseleave.deSVG");
+    jQuery(svg).unbind("mousemove.deSVG").unbind("mouseup.deSVG").unbind("mouseleave.deSVG");
     if (target && target.attr("oldx") != target.attr("x"))
       options.drop.call(target.get(0), e); //callback
     target = undefined;
-    $("body").clearUnselectable();
+    jQuery("body").clearUnselectable();
   }
 
 };
