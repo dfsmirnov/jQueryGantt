@@ -3,6 +3,10 @@ body{
   /*overflow: hidden;*/
 }
 
+.TWGanttWorkSpace {
+  line-height: normal;
+}
+
 .TWGanttWorkSpace.ganttFullScreen{
   position: fixed;
   top:0;
